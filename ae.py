@@ -131,6 +131,8 @@ cell5.text = 'Ram: '+RAM[0] #str(RAM).strip+'HDD: '+str(Disk).strip
 cell6 = row1.cells[2]
 cell6.text = 'LAU:'
 cell7 = row1.cells[3]
+if len(getUser) < 1:
+    getUser = computerName
 cell7.text = getUser
 
 row2 = table.rows[2]
