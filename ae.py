@@ -176,37 +176,35 @@ document.save('AssetInfo.docx')
 
 os.startfile("AssetInfo.docx", "print")
 
-#trys to remove it from Jamf and prints success message or prints nothing to delete 
-try:
+#Checks Jamf and locks the computer if its a Mac 
 
     #Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password
-    credentials = {}
-    with open("jamf.txt", 'r') as passw:
-        for line in passw:
-            UsernameVar, PasswordVar = line.strip().split(':')
-            credentials[UsernameVar]=PasswordVar
+credentials = {}
+with open("jamf.txt", 'r') as passw:
+    for line in passw:
+        UsernameVar, PasswordVar = line.strip().split(':')
+        credentials[UsernameVar]=PasswordVar
 
-    # base URL of JSS
-    jssUrl = 'https://infusionsoft.jamfcloud.com/JSSResource'
-    computerUrl = jssUrl + '/computers/name/' + computerName
+# base URL of JSS
+jssUrl = 'https://infusionsoft.jamfcloud.com/JSSResource'
+computerUrl = jssUrl + '/computers/name/' + computerName
 
-    response = requests.get(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
+response = requests.get(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
-    macID = (response_json['computer']['general']['id'])
+macID = (response_json['computer']['general']['id'])
 
-    MacIdUrl = jssUrl + '/computercommands/command/DeviceLock/passcode/996688/id/' + str(macID)
+MacIdUrl = jssUrl + '/computercommands/command/DeviceLock/passcode/996688/id/' + str(macID)
 
-    IDresponse = requests.post(MacIdUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
+IDresponse = requests.post(MacIdUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
-    print (IDresponse)
-    
+print (IDresponse)
+
 
 #    response = requests.delete(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
 #    print ('Successfully removed from Jamf')
     
-except:
-    print ("Nothing to delete")
+print ("Nothing to delete")
 
 
 
