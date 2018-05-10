@@ -15,7 +15,7 @@ with open("pass.txt", 'r') as passw:
      
 #assigns Firefox(geckodriver) as the browser to use and specifies the browser path
 driver = webdriver.Firefox(executable_path=r'C:\Geckodriver\geckodriver.exe')
-driver.implicitly_wait(5)
+driver.implicitly_wait(10) #seconds
 
 #Goes to assetexplorer:8080 to login
 driver.get('http://assetexplorer:8080')
