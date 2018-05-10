@@ -15,7 +15,7 @@ with open("pass.txt", 'r') as passw:
      
 #assigns Firefox(geckodriver) as the browser to use and specifies the browser path
 driver = webdriver.Firefox(executable_path=r'C:\Geckodriver\geckodriver.exe')
-driver.implicitly_wait(10) #seconds
+driver.implicitly_wait(10)
 
 #Goes to assetexplorer:8080 to login
 driver.get('http://assetexplorer:8080')
@@ -30,14 +30,7 @@ logOn.send_keys('INFUSIONSOFT.PHX')
 submit = driver.find_element_by_css_selector('#logindetailstable > tbody > tr:nth-child(5) > td:nth-child(2) > table > tbody > tr > td.pleft6.bor-left-fff > a > input')
 submit.click()
 
-"""
-try:
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'searchText')))
-except TimeoutException:
-        print("Timed out")
-        driver.quit()
-"""
-
+#Begins searching for the computer info input
 search = driver.find_element_by_css_selector('#searchText')
 search.send_keys(sys.argv[1])
 
@@ -47,6 +40,7 @@ submit.click()
 select1 = driver.find_element_by_css_selector('#AssetView_TABLE > tbody > tr:nth-child(4) > td:nth-child(3) > a')
 select1.click()
 
+#begins scraping asset info page
 assetElement = driver.find_elements_by_xpath("/html/body/table/tbody/tr[1]/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td/table[1]/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td[3]")
 AssetTag = [x.text for x in assetElement]
 
@@ -89,6 +83,8 @@ searchAsset.send_keys(u'\ue007')
 save = driver.find_element_by_css_selector('input.btn:nth-child(3)')
 save.click()
 
+
+
 now = datetime.datetime.now()
 
 #opens a word document and saves all the asset info then prints it
@@ -127,7 +123,7 @@ row1 = table.rows[1]
 cell4 = row1.cells[0]
 cell4.text = 'Specs:'
 cell5 = row1.cells[1]
-cell5.text = 'Ram: '+RAM[0] #str(RAM).strip+'HDD: '+str(Disk).strip
+cell5.text = 'Ram: '+RAM[0] 
 cell6 = row1.cells[2]
 cell6.text = 'LAU:'
 cell7 = row1.cells[3]
@@ -176,35 +172,36 @@ document.save('AssetInfo.docx')
 
 os.startfile("AssetInfo.docx", "print")
 
-#Checks Jamf and locks the computer if its a Mac 
+#locks the device if its a Mac 
+try:
 
     #Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password
-credentials = {}
-with open("jamf.txt", 'r') as passw:
-    for line in passw:
-        UsernameVar, PasswordVar = line.strip().split(':')
-        credentials[UsernameVar]=PasswordVar
+    credentials = {}
+    with open("jamf.txt", 'r') as passw:
+        for line in passw:
+            UsernameVar, PasswordVar = line.strip().split(':')
+            credentials[UsernameVar]=PasswordVar
 
-# base URL of JSS
-jssUrl = 'https://infusionsoft.jamfcloud.com/JSSResource'
-computerUrl = jssUrl + '/computers/name/' + computerName
+    # base URL of JSS
+    jssUrl = 'https://infusionsoft.jamfcloud.com/JSSResource'
+    computerUrl = jssUrl + '/computers/name/' + computerName
 
-response = requests.get(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
+    response = requests.get(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
-macID = (response_json['computer']['general']['id'])
+    macID = (response_json['computer']['general']['id'])
 
-MacIdUrl = jssUrl + '/computercommands/command/DeviceLock/passcode/996688/id/' + str(macID)
+    MacIdUrl = jssUrl + '/computercommands/command/DeviceLock/passcode/996688/id/' + str(macID)
 
-IDresponse = requests.post(MacIdUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
+    IDresponse = requests.post(MacIdUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
-print (IDresponse)
-
+    print (IDresponse)
+    
 
 #    response = requests.delete(computerUrl, headers = {'Accept': 'application/json'}, auth=(UsernameVar, PasswordVar))
 
 #    print ('Successfully removed from Jamf')
     
-print ("Nothing to delete")
-
+except:
+    print ("Finished Successfully")
 
 
