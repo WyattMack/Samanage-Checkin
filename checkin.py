@@ -10,11 +10,10 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-#Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password -- edit the code to be C:\\Users\\$yourUserName\pass.txt
+#Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password
 credentials = {}
-#os.chdir(r'C:\\Users\\wyatt.mack\\')
-#with open("pass.txt", 'r') as passw:
-with open("C:\\Users\\wyatt.mack\\pass.txt", 'r') as passw:
+os.chdir(r'C:\\Users\\username\\')
+with open("pass.txt", 'r') as passw:
     for line in passw:
         un, pw = line.strip().split(':')
         credentials[un]=pw
