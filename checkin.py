@@ -20,7 +20,7 @@ input = simpledialog.askstring(title='Asset/SN/or Computer Name',
 
 #Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password
 credentials = {}
-os.chdir(r'C:\\Users\\username\\')
+os.chdir(r'C:\\Users\\wyatt.mack\\')
 with open("pass.txt", 'r') as passw:
     for line in passw:
         un, pw = line.strip().split(':')
@@ -57,11 +57,13 @@ try:
 except: 
     'selenium.common.exceptions.NoSuchElementException: Message: Unable to locate element: .object_link'
     input = simpledialog.askstring(title='Asset/SN/or Computer Name',
-                prompt='Search Criteria:\nPlease Use Asset Tag\nOr Computer Name:')
+        prompt='Search Criteria:\nPlease Use Asset Tag\nOr Computer Name:')
     submit = driver.find_element_by_css_selector('.SearchInput__input___29PgA').clear()
     submit = driver.find_element_by_css_selector('.SearchInput__input___29PgA')
     submit.send_keys(input)
     submit.send_keys(Keys.ENTER)
+    submit = driver.find_element_by_css_selector('.object_link')
+    submit.click()
 
 #Scrape machine name
 machine = driver.find_elements_by_xpath('/html/body/div[3]/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div[1]')
