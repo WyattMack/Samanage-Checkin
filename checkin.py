@@ -1,4 +1,6 @@
 import sys, datetime, os, requests, base64, json, selenium
+import tkinter as Tk
+from tkinter import simpledialog
 from docx import Document
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -9,6 +11,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
+
+#Collect search information
+query = Tk.Tk()
+query.withdraw()
+input = simpledialog.askstring(title='Asset/SN/or Computer Name',
+                                    prompt='Search Criteria:\nPlease Use Asset Tag\nOr Computer Name:')
 
 #Saves username and password from a txt document in C:users\user\ Username and password must be exactly like this -> username:password
 credentials = {}
@@ -38,12 +46,22 @@ search = driver.find_element_by_css_selector('.SearchInput__searchIconStyle___3Q
 search.click()
 
 submit = driver.find_element_by_css_selector('.SearchInput__input___29PgA')
-submit.send_keys(sys.argv[1])
+submit.send_keys(input)
 submit.send_keys(Keys.ENTER)
 
-#Clicks into the computer record
-record = driver.find_element_by_css_selector('.object_link')
-record.click()
+#Clicks into the computer record if found, and prompts to search again if no record is found
+try:
+    record = driver.find_element_by_css_selector('.object_link')
+    record.click()
+
+except: 
+    'selenium.common.exceptions.NoSuchElementException: Message: Unable to locate element: .object_link'
+    input = simpledialog.askstring(title='Asset/SN/or Computer Name',
+                prompt='Search Criteria:\nPlease Use Asset Tag\nOr Computer Name:')
+    submit = driver.find_element_by_css_selector('.SearchInput__input___29PgA').clear()
+    submit = driver.find_element_by_css_selector('.SearchInput__input___29PgA')
+    submit.send_keys(input)
+    submit.send_keys(Keys.ENTER)
 
 #Scrape machine name
 machine = driver.find_elements_by_xpath('/html/body/div[3]/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div[1]')
